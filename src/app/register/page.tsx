@@ -30,10 +30,15 @@ import axios from 'axios'
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string()
+  .min(6)
+  .regex(/[a-z]/,"Must Contain atleast one Small letter")
+  .regex(/[A-Z]/,"Must Contain atleast one Capital Letter")
+  .regex(/[!@#$%^]/,"Must Contain atleast one specialCharacter"),
+  username:z.string()
 })
 
-const Login = () => {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
  
@@ -43,22 +48,26 @@ const Login = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
+      username:'',
     },
   })
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const result = await axios.post(`https://api.freeapi.app/api/v1/users/login`,Form,{
+      const result = await axios.post(`https://api.freeapi.app/api/v1/users/register`,values, {
         headers:{
             'Content-Type':'application/json'
         }
       })
-     console.log(result)
+     if(result.status===201){
+      toast.success(result?.message)
+      
+     }
     
   }
   catch(err){
-    console.log(err)
+   console.log(err)
   }
 }
 
@@ -66,11 +75,32 @@ const Login = () => {
     <div className="flex justify-center items-center min-h-[calc(100vh-10ch)] px-4 bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-2xl text-center">Register</CardTitle>
         </CardHeader>
         <CardContent>
+          
+          
+          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              
+              
+              {/* UserName Field */}
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>UserName</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="you@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              
               {/* Email Field */}
               <FormField
                 control={form.control}
@@ -85,6 +115,7 @@ const Login = () => {
                   </FormItem>
                 )}
               />
+
 
               {/* Password Field */}
               <FormField
@@ -126,14 +157,14 @@ const Login = () => {
 
               {/* Submit Button */}
               <Button type="submit" className="w-full">
-                Log In
+               Register
               </Button>
 
               {/* Register Link */}
               <p className="text-center text-sm text-gray-600">
-                Don’t have an account?{' '}
-                <Link href="/register" className="text-blue-600 hover:underline">
-                  Register
+                Already have an account?{' '}
+                <Link href="/login" className="text-blue-600 hover:underline">
+                  Login
                 </Link>
               </p>
             </form>
@@ -144,4 +175,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register

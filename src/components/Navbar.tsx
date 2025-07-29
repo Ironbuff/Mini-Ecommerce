@@ -7,7 +7,8 @@ const Navbar = () => {
     {id:1, name:"Product", links:"/product" },
     {id:2, name:"Cart", links:"/cart"},
     {id:3, name:"Order", links:"/order"},
-    {id:4, name:"login", links:"/login"}
+    {id:4, name:"login", links:"/login"},
+    {id:5, name:"register", links:"/register"}
  ] 
   
  return (
