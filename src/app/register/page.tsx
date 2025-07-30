@@ -22,11 +22,11 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { IoEyeSharp } from 'react-icons/io5'
 import { FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -53,23 +53,32 @@ const Register = () => {
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const result = await axios.post(`https://api.freeapi.app/api/v1/users/register`,values, {
-        headers:{
-            'Content-Type':'application/json'
-        }
-      })
-     if(result.status===201){
-      toast.success(result?.message)
-      
-     }
-    
+ const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  try {
+    const result = await axios.post(
+      `https://api.freeapi.app/api/v1/users/register`,
+      values,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // ✅ Handle success case (usually 200 or 201)
+    if (result.status === 200 || result.status === 201) {
+      toast.success(result.data.message);
+      router.push('/login'); // optional
+    }
+  } catch (err: any) {
+    // ✅ Display toast message from error response
+    const errorMessage =
+      err?.response?.data?.message || 'Registration failed. Please try again.';
+    toast.error(errorMessage);
+    console.error('Registration error:', err);
   }
-  catch(err){
-   console.log(err)
-  }
-}
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-10ch)] px-4 bg-gray-50">

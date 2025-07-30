@@ -29,7 +29,7 @@ import { FaEyeSlash } from 'react-icons/fa'
 import axios from 'axios'
 
 const formSchema = z.object({
-  email: z.string().email(),
+  username: z.string(),
   password: z.string().min(6),
 })
 
@@ -42,7 +42,7 @@ const Login = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+     username: '',
       password: ''
     },
   })
@@ -71,15 +71,16 @@ const Login = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              {/* Email Field */}
+                  
+              {/* UserName Field */}
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>UserName</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="you@example.com" {...field} />
+                      <Input type="text" placeholder="you@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
